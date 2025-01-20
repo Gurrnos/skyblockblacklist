@@ -3,9 +3,12 @@ const cors = require('cors');
 const app = express();
 const db = require("better-sqlite3")("skyblockshitters.db");
 
+// Use cors
 app.use(cors());
 app.use(express.json());
 
+
+// Database table creation
 db.prepare(`
   CREATE TABLE IF NOT EXISTS Shitterlist(
   id INTEGER PRIMARY KEY, 
@@ -16,6 +19,8 @@ db.prepare(`
   )
 `).run();
 
+
+// Add user to the blacklist, with field data from discord bot command
 app.post("/addUser", function(req, res){
   const { username, area, reason, addedBy } = req.body;
 
@@ -35,6 +40,8 @@ app.post("/addUser", function(req, res){
   res.status(200).send("User added");
 })
 
+
+// Check if a user is on the list, if it is, get all the data and send as a response
 app.get("/checkUser", function(req, res) {
   const { username } = req.query;
 
@@ -47,6 +54,8 @@ app.get("/checkUser", function(req, res) {
   res.json(findUser);
 })
 
+
+// Find all users currently on the list
 app.get("/findAll", function (req, res) {
   const findAll = db.prepare("SELECT * FROM Shitterlist").all()
 
@@ -57,6 +66,8 @@ app.get("/findAll", function (req, res) {
   res.json(findAll)
 })
 
+
+// Delete user from the list
 app.delete("/deleteUser", function (req, res) {
   const { username } = req.body;
 
@@ -75,7 +86,7 @@ app.delete("/deleteUser", function (req, res) {
   }
 });
 
-
+// Run server
 app.listen(3000, () =>
   console.log("Server is running on http://localhost:" + 3000)
 );
