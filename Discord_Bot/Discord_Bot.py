@@ -12,7 +12,7 @@ load_dotenv()
 intents = discord.Intents.all()
 
 bot = commands.Bot(command_prefix='/', intents=intents)
-
+# Sync commands
 @bot.event
 async def on_ready():
     try:
@@ -21,7 +21,7 @@ async def on_ready():
     except Exception as e:
         print(e)
 
-
+# Function for checking if the user has the required role
 def has_role(role_name: str):
     async def predicate(interaction: discord.Interaction):
         if any(role.name == role_name for role in interaction.user.roles):
@@ -31,7 +31,7 @@ def has_role(role_name: str):
     return app_commands.check(predicate)
 
 
-
+# Function for adding someone to the list
 @bot.tree.command(name="add")
 @has_role('List Editor')
 async def add(interaction: discord.Interaction, name: str, area: str, *, reason: str):
@@ -58,7 +58,7 @@ async def add(interaction: discord.Interaction, name: str, area: str, *, reason:
         embed = discord.Embed(title="Failed to add user: Server error", color=discord.Color.red())
         await interaction.response.send_message(embed=embed)
 
-
+# Missing role
 @add.error
 async def add_error(interaction: discord.Interaction, error):
     if isinstance(error, commands.MissingRole):
@@ -66,6 +66,7 @@ async def add_error(interaction: discord.Interaction, error):
         await interaction.response.send_message(embed=embed)
 
 
+# Checking if a user is on the list
 @bot.tree.command(name="check")
 async def check(interaction: discord.Interaction, name: str):
     response = requests.get(
@@ -88,7 +89,7 @@ async def check(interaction: discord.Interaction, name: str):
         await interaction.response.send_message(embed=embed)
 
 
-
+# Checking the entire list
 @bot.tree.command(name="list")
 async def list(interaction: discord.Interaction):
     response = requests.get(
@@ -116,6 +117,7 @@ async def list(interaction: discord.Interaction):
         await interaction.response.send_message(embed=embed)
 
 
+# Remove from list
 @bot.tree.command(name="remove")
 @has_role('List Editor')
 async def remove(interaction: discord.Interaction, name: str, *, reason: str = "No Reason Provided"):
@@ -138,12 +140,14 @@ async def remove(interaction: discord.Interaction, name: str, *, reason: str = "
         embed = discord.Embed(title="Failed to remove user: Server error", color=discord.Color.red())
         await interaction.response.send_message(embed=embed)
 
+# Missing role
 @remove.error
 async def remove_error(interaction: discord.Interaction, error):
     if isinstance(error, commands.MissingRole):
         embed = discord.Embed(title="You do not have permission to use this command", color=discord.Color.red())
         await interaction.response.send_message(embed=embed)
 
+# Read .env value
 BOT_TOKEN = os.getenv("BOT_SECRET")
 
 bot.run(BOT_TOKEN)
