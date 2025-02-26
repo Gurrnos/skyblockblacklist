@@ -13,9 +13,9 @@ db.prepare(`
   CREATE TABLE IF NOT EXISTS Shitterlist(
   id INTEGER PRIMARY KEY, 
   username varchar(50) NOT NULL, 
-  area varchar(150) NOT NULL, 
-  reason TEXT NOT NULL, 
-  addedBy varchar(100) NOT NULL
+  area varchar(50) NOT NULL, 
+  reason varchar(150) NOT NULL, 
+  addedBy varchar(50) NOT NULL
   )
 `).run();
 
