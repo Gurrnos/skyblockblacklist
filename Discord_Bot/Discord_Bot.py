@@ -54,6 +54,10 @@ async def add(interaction: discord.Interaction, name: str, area: str, *, reason:
         embed = discord.Embed(title=f"Failed to add user: `{name}` is already on the list", color=discord.Color.red())
         await interaction.response.send_message(embed=embed)
 
+    elif response.status_code == 410:
+        embed = discord.Embed(title=f"Failed to add user, input exceeded character limit", color=discord.Color.red())
+        await interaction.response.send_message(embed=embed)
+
     else:
         embed = discord.Embed(title="Failed to add user: Server error", color=discord.Color.red())
         await interaction.response.send_message(embed=embed)

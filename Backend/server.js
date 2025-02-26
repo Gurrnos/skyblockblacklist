@@ -12,10 +12,10 @@ app.use(express.json());
 db.prepare(`
   CREATE TABLE IF NOT EXISTS Shitterlist(
   id INTEGER PRIMARY KEY, 
-  username varchar(50) NOT NULL, 
-  area varchar(50) NOT NULL, 
-  reason varchar(150) NOT NULL, 
-  addedBy varchar(50) NOT NULL
+  username TEXT NOT NULL, 
+  area TEXT NOT NULL, 
+  reason TEXT NOT NULL,
+  addedBy TEXT NOT NULL
   )
 `).run();
 
@@ -27,6 +27,11 @@ app.post("/addUser", function(req, res){
   if (!username || !area || !reason || !addedBy) {
     return res.status(400).send("All fields are required")
   }
+
+  if (username.length > 50 || area.length > 50 || reason.length > 150) {
+    return res.status(410).send("Input exceeded character limit");
+  }
+  
 
   const existingUser = db.prepare("SELECT * FROM Shitterlist WHERE username = ?").get(username);
 
